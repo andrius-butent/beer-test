@@ -1,0 +1,18 @@
+.button {
+    width: 250px;
+    height: 40px;
+    background-color: #1EB2D8;
+    color: white;
+    font-weight: bold;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.input {
+    width: 250px;
+    height: 35px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
