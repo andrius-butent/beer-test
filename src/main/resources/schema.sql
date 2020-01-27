@@ -14,3 +14,15 @@ CREATE TABLE Beers (
   BreweryId INT NOT NULL,
   BeerName VARCHAR(150)
 );
+
+DROP TABLE IF EXISTS Breweries;
+
+CREATE TABLE Breweries (
+  Id INT AUTO_INCREMENT  PRIMARY KEY,
+  Name VARCHAR(150),
+  Address VARCHAR(150),
+  City VARCHAR(50),
+  State VARCHAR(50),
+  Code VARCHAR(20),
+  Country VARCHAR(50)
+);
