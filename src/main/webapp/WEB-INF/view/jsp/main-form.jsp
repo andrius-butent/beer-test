@@ -20,7 +20,7 @@
         <form:input path="longitude" type="number" cssClass="input" />
         <br><br>
 
-        <input type="submit" class="button">
+        <input type="submit" value="Let's travel!" class="button">
     </form:form>
 </body>
 </html>
