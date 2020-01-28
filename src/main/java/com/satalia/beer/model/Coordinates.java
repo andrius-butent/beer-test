@@ -1,15 +1,43 @@
 package com.satalia.beer.model;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 /*
 	This class will contain geo coordinates (latitude, longitude)
 */
-
+@Entity
+@Table(name="Geo_Codes")
 public class Coordinates {
 
-	BigDecimal latitude;
-	BigDecimal longitude;
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(name="Brewery_Id")
+	private Long breweryId;
+
+	@Column(name="Latitude")
+	private BigDecimal latitude;
+
+	@Column(name="Longitude")
+	private BigDecimal longitude;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getBreweryId() {
+		return breweryId;
+	}
+
+	public void setBreweryId(Long breweryId) {
+		this.breweryId = breweryId;
+	}
 
 	public BigDecimal getLatitude() {
 		return latitude;
