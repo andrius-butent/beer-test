@@ -1,4 +1,4 @@
-INSERT INTO GeoCodes (Id, BreweryId, Latitude, Longitude) VALUES
+INSERT INTO Geo_Codes (Id, Brewery_Id, Latitude, Longitude) VALUES
 (1,1,30.223400115966797,-97.76969909667969),
 (2,2,37.782501220703125,-122.39299774169922),
 (3,3,50.76679992675781,4.30810022354126),
@@ -1304,7 +1304,7 @@ INSERT INTO GeoCodes (Id, BreweryId, Latitude, Longitude) VALUES
 (1314,1388,40.70000076293945,-76.17469787597656),
 (1315,1386,29.938600540161133,-90.07599639892578);
 
-INSERT INTO Beers (Id, BreweryId, BeerName) VALUES
+INSERT INTO Beers (Id, Brewery_Id, Beer_Name) VALUES
 (1,812,'Hocus Pocus'),
 (2,264,'Grimbergen Blonde'),
 (3,779,'Widdershins Barleywine'),
