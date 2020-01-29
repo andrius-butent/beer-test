@@ -12,12 +12,12 @@
 
         <b>Latitude</b>
         <br>
-        <form:input path="latitude" type="number" cssClass="input" />
+        <form:input path="latitude" cssClass="input" />
         <br><br>
 
         <b>Longitude</b>
         <br>
-        <form:input path="longitude" type="number" cssClass="input" />
+        <form:input path="longitude" cssClass="input" />
         <br><br>
 
         <input type="submit" value="Let's travel!" class="button">
