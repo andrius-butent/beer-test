@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1>It's the weekend! Beer time.</h1>
-    <form:form action="startBeerTravel" modelAttribute="coordinates">
+    <form:form action="startBeerTravel" modelAttribute="myCoordinates">
 
         <b>Latitude</b>
         <br>
