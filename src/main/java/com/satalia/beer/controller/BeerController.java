@@ -1,8 +1,8 @@
 package com.satalia.beer.controller;
 
 import com.satalia.beer.BeerUtils;
-import com.satalia.beer.model.Coordinates;
-import com.satalia.beer.service.CoordinatesService;
+import com.satalia.beer.model.BreweryCodes;
+import com.satalia.beer.service.BreweryCodesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,48 +11,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/beer")
 public class BeerController {
 
 	@Autowired
-	private CoordinatesService coordinatesService;
+	private BreweryCodesService breweryCodesService;
 
 	private static final int MAX_DISTANCE = 2000;
-	private Map<Integer, Long> idMap = new HashMap<>(); // need map to resolve brewery ID from matrix
 
 	@RequestMapping("/form")
-  public String getMainForm(@ModelAttribute("myCoordinates") Coordinates myCoordinates, Model model) {
-		model.addAttribute("myCoordinates", new Coordinates());
+  public String getMainForm(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates, Model model) {
+		model.addAttribute("myCoordinates", new BreweryCodes());
 
     return "main-form";
   }
 
 	@RequestMapping("/startBeerTravel")
-	public @ResponseBody String startBeerTravel(@ModelAttribute("myCoordinates") Coordinates myCoordinates) {
+	public @ResponseBody String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates) {
 
-		List<Coordinates> breweryCoordinatesList = new ArrayList<>();
+		List<BreweryCodes> breweryList = new ArrayList<>();
 
 		myCoordinates.setId(0L);
-		breweryCoordinatesList.add(myCoordinates);
+		breweryList.add(myCoordinates);
 
-		for (Coordinates coordinates : coordinatesService.getAllBreweriesCoordinates()) {
+		for (BreweryCodes brewery : breweryCodesService.getAllBreweryCodes()) {
 
 			// we calculate distance between home and breweries
-			double distance = BeerUtils.haversine(myCoordinates.getLatitude(), myCoordinates.getLongitude(),
-				coordinates.getLatitude(), coordinates.getLongitude());
+			double distance = BeerUtils.haversine(myCoordinates, brewery);
 
 			// collecting breweries that fit by the distance
 			if (distance <= MAX_DISTANCE / 2d) {
-				breweryCoordinatesList.add(coordinates);
+				breweryList.add(brewery);
 			}
 		}
-
-		double [][] distanceMatrix = BeerUtils.getDistanceMatrix(breweryCoordinatesList, idMap);
 
 		return "TBD";
 	}

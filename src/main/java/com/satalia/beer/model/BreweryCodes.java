@@ -1,14 +1,14 @@
 package com.satalia.beer.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 /*
 	This class will contain geo coordinates (latitude, longitude)
+	and other data for travelling to the next brewery
 */
 @Entity
 @Table(name="Geo_Codes")
-public class Coordinates {
+public class BreweryCodes {
 
 	@Id
 	@GeneratedValue

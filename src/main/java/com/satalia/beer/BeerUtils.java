@@ -1,16 +1,22 @@
 package com.satalia.beer;
 
-import com.satalia.beer.model.Coordinates;
-
-import java.util.List;
-import java.util.Map;
+import com.satalia.beer.model.BreweryCodes;
 
 public class BeerUtils {
 
 	// radius of the earth
 	private static final int R = 6371;
 
-	public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+	public static double haversine(BreweryCodes pointA, BreweryCodes pointB) {
+
+		if (pointA == null || pointB == null) {
+			return 0;
+		}
+
+		double lat1 = pointA.getLatitude();
+		double lon1 = pointA.getLongitude();
+		double lat2 = pointB.getLatitude();
+		double lon2 = pointB.getLongitude();
 
 		// distance between latitudes and longitudes
 		double dLat = Math.toRadians(lat2 - lat1);
@@ -25,31 +31,5 @@ public class BeerUtils {
 		double c = 2 * Math.asin(Math.sqrt(a));
 
 		return R * c;
-	}
-
-	public static double[][] getDistanceMatrix(List<Coordinates> breweryCoordinatesList, Map<Integer, Long> idMap) {
-
-		if (breweryCoordinatesList != null && !breweryCoordinatesList.isEmpty()) {
-			double[][] distanceMatrix = new double[breweryCoordinatesList.size()][breweryCoordinatesList.size()];
-			Coordinates pointA;
-			Coordinates pointB;
-
-			// creating distance matrix across all breweries
-			for (int i = 0; i < breweryCoordinatesList.size(); i++) {
-				pointA = breweryCoordinatesList.get(i);
-				idMap.put(i, pointA.getId());
-
-				for (int j = 0; j < breweryCoordinatesList.size(); j++) {
-					pointB = breweryCoordinatesList.get(j);
-
-					distanceMatrix[i][j] = haversine(pointA.getLatitude(), pointA.getLongitude(), pointB.getLatitude(),
-						pointB.getLongitude());
-				}
-			}
-
-			return distanceMatrix;
-		}
-
-		return new double[0][];
 	}
 }
