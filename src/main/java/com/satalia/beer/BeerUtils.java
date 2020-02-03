@@ -1,8 +1,11 @@
 package com.satalia.beer;
 
 import com.satalia.beer.model.BreweryCodes;
+import com.satalia.beer.model.TravelHistory;
 
 public class BeerUtils {
+
+	public static final int MAX_DISTANCE = 2000;
 
 	// radius of the earth
 	private static final int R = 6371;
@@ -13,10 +16,18 @@ public class BeerUtils {
 			return 0;
 		}
 
-		double lat1 = pointA.getLatitude();
-		double lon1 = pointA.getLongitude();
-		double lat2 = pointB.getLatitude();
-		double lon2 = pointB.getLongitude();
+		return haversine(pointA.getLatitude(), pointA.getLongitude(), pointB.getLatitude(), pointB.getLongitude());
+	}
+
+	public static double haversine(TravelHistory info, BreweryCodes point) {
+		if (info == null || point == null) {
+			return 0;
+		}
+
+		return haversine(info.getLatitude(), info.getLongitude(), point.getLatitude(), point.getLongitude());
+	}
+
+	public static double haversine(double lat1, double lon1, double lat2, double lon2) {
 
 		// distance between latitudes and longitudes
 		double dLat = Math.toRadians(lat2 - lat1);
