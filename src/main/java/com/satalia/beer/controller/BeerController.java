@@ -35,7 +35,7 @@ public class BeerController {
   }
 
 	@RequestMapping("/startBeerTravel")
-	public @ResponseBody String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates) {
+	public String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates) {
 
 		List<BreweryCodes> breweryList = new ArrayList<>();
 		for (BreweryCodes brewery : breweryCodesService.getAllBreweryCodes()) {
@@ -103,6 +103,11 @@ public class BeerController {
 			}
 		}
 
-		return "TBD";
+		return "result-page";
+	}
+
+	@RequestMapping("/goBack")
+	public String goBack() {
+		return "redirect:form";
 	}
 }

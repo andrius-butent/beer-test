@@ -13,11 +13,13 @@
         <b>Latitude</b>
         <br>
         <form:input path="latitude" cssClass="input" />
+        <form:errors path="latitude" cssClass="error" />
         <br><br>
 
         <b>Longitude</b>
         <br>
         <form:input path="longitude" cssClass="input" />
+        <form:errors path="latitude" cssClass="error" />
         <br><br>
 
         <input type="submit" value="Let's travel!" class="button">
