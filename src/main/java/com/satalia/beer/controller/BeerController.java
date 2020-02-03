@@ -55,6 +55,14 @@ public class BeerController {
 			}
 		}
 
+		// check if we found any breweries
+		if (breweryList.isEmpty()) {
+			model.addAttribute("resultMessage", "<h3>Need more fuel!!!</h3>");
+			model.addAttribute("time", System.currentTimeMillis() - timeBefore);
+
+			return "result-page";
+		}
+
 		// adding beers to their breweries
 		List<Beers> beers = beersService.getAllBeers();
 		for (BreweryCodes bc : breweryList) {
