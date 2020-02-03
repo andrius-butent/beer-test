@@ -16,4 +16,8 @@ public class BreweryService {
 	public List<Brewery> getAllBreweries() {
 		return repository.findAll();
 	}
+
+	public List<Brewery> getAllBreweriesById(List<Long> ids) {
+		return repository.findAllById(ids);
+	}
 }
