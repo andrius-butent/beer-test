@@ -1,7 +1,12 @@
 package com.satalia.beer;
 
+import com.satalia.beer.model.Beers;
+import com.satalia.beer.model.Brewery;
 import com.satalia.beer.model.BreweryCodes;
 import com.satalia.beer.model.TravelHistory;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BeerUtils {
 
@@ -42,5 +47,77 @@ public class BeerUtils {
 		double c = 2 * Math.asin(Math.sqrt(a));
 
 		return R * c;
+	}
+
+	public static String generateResultMessage(List<Long> resultOrder, List<Brewery> breweries,
+																						 List<BreweryCodes> breweryList, BreweryCodes homeCodes) {
+		if (breweries.isEmpty()) {
+			return "Need more fuel!!!";
+		}
+
+		// creating home brewery
+		Brewery homeBrewery = new Brewery();
+		homeBrewery.setId(0L);
+		homeBrewery.setBreweryName("HOME");
+
+		String resultMessage = "";
+		double totalDistance = 0;
+		double distance;
+		char prefix = '\u2192';
+
+		// I am adding home coordinates
+		resultOrder.add(0L);
+
+		resultMessage += "Found " + breweries.size() + " beer factories.<br><br>";
+
+		for (int i = 0; i < resultOrder.size(); i++) {
+
+			Long index = resultOrder.get(i);
+			Long previousIndex;
+
+			if (i == 0) {
+				previousIndex = resultOrder.get(i);
+			} else {
+				previousIndex = resultOrder.get(i - 1);
+			}
+
+			// collecting breweries, their geo codes and next brewery for calculating distance
+			Brewery brewery = breweries.stream().filter(b -> b.getId().equals(index)).findFirst().orElse(homeBrewery);
+			BreweryCodes breweryCodes = breweryList.stream().filter(bc -> bc.getBreweryId().equals(index)).findFirst()
+				.orElse(homeCodes);
+			BreweryCodes previousBreweryCodes = breweryList.stream().filter(bc
+				-> bc.getBreweryId().equals(previousIndex)).findFirst().orElse(homeCodes);
+
+			if (i == resultOrder.size() - 1) {
+				prefix = '\u2190';
+			}
+
+			distance = haversine(breweryCodes, previousBreweryCodes);
+			totalDistance += distance;
+
+			resultMessage += prefix + " [" + brewery.getId() + "] " + brewery.getBreweryName() + ": "
+				+ breweryCodes.getLatitude() + ", " + breweryCodes.getLongitude() + " distance " + Math.round(distance)
+				+ " km<br>";
+		}
+		resultMessage += "<br><br>Total distance traveled: " + Math.round(totalDistance) + " km";
+
+		return resultMessage;
+	}
+
+	public static String getBeerNames(List<BreweryCodes> breweryList, List<Long> breweries) {
+		String beerNames = "";
+		int count = 0;
+
+		// collecting all beer types from visited breweries
+		for (BreweryCodes breweryCodes : breweryList.stream().filter(b
+			-> breweries.contains(b.getBreweryId())).collect(Collectors.toList())) {
+
+			for (Beers b : breweryCodes.getBeers()) {
+				beerNames += b.getBeerName() + "<br>";
+				count++;
+			}
+		}
+
+		return "Collected " + count + " beer types:<br><br>" + beerNames;
 	}
 }

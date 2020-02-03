@@ -2,16 +2,17 @@ package com.satalia.beer.controller;
 
 import com.satalia.beer.BeerUtils;
 import com.satalia.beer.model.Beers;
+import com.satalia.beer.model.Brewery;
 import com.satalia.beer.model.BreweryCodes;
 import com.satalia.beer.model.TravelHistory;
 import com.satalia.beer.service.BeersService;
 import com.satalia.beer.service.BreweryCodesService;
+import com.satalia.beer.service.BreweryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -25,6 +26,9 @@ public class BeerController {
 	@Autowired
 	private BeersService beersService;
 
+	@Autowired
+	private  BreweryService breweryService;
+
 	private List<Long> result = new ArrayList<>();
 
 	@RequestMapping("/form")
@@ -35,7 +39,9 @@ public class BeerController {
   }
 
 	@RequestMapping("/startBeerTravel")
-	public String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates) {
+	public String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates, Model model) {
+
+		long timeBefore = System.currentTimeMillis();
 
 		List<BreweryCodes> breweryList = new ArrayList<>();
 		for (BreweryCodes brewery : breweryCodesService.getAllBreweryCodes()) {
@@ -86,7 +92,7 @@ public class BeerController {
 
 				int beerCount = currentPoint.getCollectedBeers() + nextBrewery.getBeerCount();
 
-				if ((distanceBetween + distanceToHome) <= BeerUtils.MAX_DISTANCE) {
+				if ((distanceBetween + distanceToHome) <= BeerUtils.MAX_DISTANCE && totalBeerCount <= beerCount) {
 
 					totalBeerCount = beerCount;
 
@@ -102,6 +108,14 @@ public class BeerController {
 				}
 			}
 		}
+
+		// selecting names of breweries
+		List<Brewery> breweries = breweryService.getAllBreweriesById(result);
+
+		model.addAttribute("resultMessage", BeerUtils.generateResultMessage(result, breweries, breweryList,
+			myCoordinates));
+		model.addAttribute("beerNames", BeerUtils.getBeerNames(breweryList, result));
+		model.addAttribute("time", System.currentTimeMillis() - timeBefore);
 
 		return "result-page";
 	}
