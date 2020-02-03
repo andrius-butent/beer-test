@@ -12,7 +12,7 @@ public class Brewery {
 	private Long id;
 
 	@Column(name="Name")
-	private Long breweryName;
+	private String breweryName;
 
 	public Long getId() {
 		return id;
@@ -22,11 +22,11 @@ public class Brewery {
 		this.id = id;
 	}
 
-	public Long getBreweryName() {
+	public String getBreweryName() {
 		return breweryName;
 	}
 
-	public void setBreweryName(Long breweryName) {
+	public void setBreweryName(String breweryName) {
 		this.breweryName = breweryName;
 	}
 }
