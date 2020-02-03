@@ -1,6 +1,8 @@
 package com.satalia.beer.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 	This class will contain geo coordinates (latitude, longitude)
@@ -22,6 +24,29 @@ public class BreweryCodes {
 
 	@Column(name="Longitude")
 	private Double longitude;
+
+	@Transient
+	private List<Long> parentIds = new ArrayList<>();
+
+	@Transient
+	private Double totalDistance;
+
+	@Transient
+	private List<BreweryCodes> nextPossibleBreweries = new ArrayList<>();
+
+	@Transient
+	private List<Beers> beers = new ArrayList<>();
+
+	public BreweryCodes() {
+		this(0L, 0d, 0d);
+	}
+
+	public BreweryCodes(Long breweryId, Double latitude, Double longitude) {
+		this.breweryId = breweryId;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.totalDistance = 0d;
+	}
 
 	public Long getId() {
 		return id;
@@ -53,5 +78,45 @@ public class BreweryCodes {
 
 	public void setLongitude(Double longitude) {
 		this.longitude = longitude;
+	}
+
+	public List<Long> getParentIds() {
+		return parentIds;
+	}
+
+	public void setParentIds(List<Long> parentIds) {
+		this.parentIds = parentIds;
+	}
+
+	public Double getTotalDistance() {
+		return totalDistance;
+	}
+
+	public void setTotalDistance(Double totalDistance) {
+		this.totalDistance = totalDistance;
+	}
+
+	public List<BreweryCodes> getNextPossibleBreweries() {
+		return nextPossibleBreweries;
+	}
+
+	public void setNextPossibleBreweries(List<BreweryCodes> nextPossibleBreweries) {
+		this.nextPossibleBreweries = nextPossibleBreweries;
+	}
+
+	public List<Beers> getBeers() {
+		return beers;
+	}
+
+	public void setBeers(List<Beers> beers) {
+		this.beers = beers;
+	}
+
+	public void addBeer(Beers beer) {
+		this.beers.add(beer);
+	}
+
+	public int getBeerCount() {
+		return this.beers.size();
 	}
 }
