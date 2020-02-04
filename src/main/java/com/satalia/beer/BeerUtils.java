@@ -3,14 +3,13 @@ package com.satalia.beer;
 import com.satalia.beer.model.Beers;
 import com.satalia.beer.model.Brewery;
 import com.satalia.beer.model.BreweryCodes;
-import com.satalia.beer.model.TravelHistory;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BeerUtils {
 
-	public static final int MAX_DISTANCE = 2000;
+	public static final double MAX_DISTANCE = 2000d;
 
 	// radius of the earth
 	private static final int R = 6371;
@@ -22,14 +21,6 @@ public class BeerUtils {
 		}
 
 		return haversine(pointA.getLatitude(), pointA.getLongitude(), pointB.getLatitude(), pointB.getLongitude());
-	}
-
-	public static double haversine(TravelHistory info, BreweryCodes point) {
-		if (info == null || point == null) {
-			return 0;
-		}
-
-		return haversine(info.getLatitude(), info.getLongitude(), point.getLatitude(), point.getLongitude());
 	}
 
 	public static double haversine(double lat1, double lon1, double lat2, double lon2) {
@@ -119,5 +110,33 @@ public class BeerUtils {
 		}
 
 		return "Collected " + count + " beer types:<br><br>" + beerNames;
+	}
+
+	public static BreweryCodes getBreweryByWeight(List<BreweryCodes> breweryCodes, BreweryCodes currentPoint,
+																								List<Long> visited) {
+
+		// filter not visited breweries
+		List<BreweryCodes> codes = breweryCodes.stream().filter(code
+			-> !visited.contains(code.getBreweryId())).collect(Collectors.toList());
+
+		int index = 0;
+		double weight = Double.MIN_VALUE;
+
+		if (!codes.isEmpty()) {
+			for (int i = 0; i < codes.size(); i++) {
+				double distance = haversine(codes.get(i), currentPoint);
+				int beers = codes.get(i).getBeerCount();
+
+				// calculating relation between beer count and distance. We will use biggest value
+				if ((beers / distance) > weight) {
+					weight = beers / distance;
+					index = i;
+				}
+			}
+
+			return codes.get(index);
+		} else {
+			return null;
+		}
 	}
 }
