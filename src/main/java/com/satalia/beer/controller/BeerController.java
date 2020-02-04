@@ -4,7 +4,6 @@ import com.satalia.beer.BeerUtils;
 import com.satalia.beer.model.Beers;
 import com.satalia.beer.model.Brewery;
 import com.satalia.beer.model.BreweryCodes;
-import com.satalia.beer.model.TravelHistory;
 import com.satalia.beer.service.BeersService;
 import com.satalia.beer.service.BreweryCodesService;
 import com.satalia.beer.service.BreweryService;
@@ -28,8 +27,6 @@ public class BeerController {
 
 	@Autowired
 	private  BreweryService breweryService;
-
-	private List<Long> result = new ArrayList<>();
 
 	@RequestMapping("/form")
   public String getMainForm(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates, Model model) {
@@ -73,47 +70,42 @@ public class BeerController {
 			}
 		}
 
-		int totalBeerCount = 0;
-
-		// creating initial travel point
-		TravelHistory home = new TravelHistory (myCoordinates.getLatitude(), myCoordinates.getLongitude(), 0d, 0);
-		home.setParents(Collections.singletonList(0L));
-
 		// stack for calculations
-		Stack<TravelHistory> stack = new Stack<>();
-		stack.add(home);
+		Stack<BreweryCodes> stack = new Stack<>();
+		stack.add(myCoordinates);
 
-		// the loop will work until all possible breweries will be visited
+		List<Long> result = new ArrayList<>();
+		result.add(0L);
+
+		// this contains visited breweries
+		List<Long> visited = new ArrayList<>();
+
+		double totalDistance = 0;
+
 		while (!stack.isEmpty()) {
 
-			TravelHistory currentPoint = stack.pop();
-			List<Long> breweryIds = currentPoint.getParents();
+			BreweryCodes current = stack.pop();
+			BreweryCodes nextBrewery = BeerUtils.getBreweryByWeight(breweryList, current, visited);
 
-			for (BreweryCodes nextBrewery : breweryList) {
+			if (nextBrewery == null) {
+				break;
+			}
 
-				if (breweryIds.contains(nextBrewery.getBreweryId())) {
-					continue;
-				}
+			double distanceToHome = BeerUtils.haversine(myCoordinates, nextBrewery);
+			double distanceBetween = BeerUtils.haversine(current, nextBrewery) + totalDistance;
 
-				double distanceToHome = BeerUtils.haversine(myCoordinates, nextBrewery);
-				double distanceBetween = BeerUtils.haversine(currentPoint, nextBrewery) + currentPoint.getTraveledDistance();
+			if ((distanceBetween + distanceToHome) <= BeerUtils.MAX_DISTANCE) {
 
-				int beerCount = currentPoint.getCollectedBeers() + nextBrewery.getBeerCount();
+				totalDistance = distanceBetween;
+				result.add(nextBrewery.getBreweryId());
+				visited.add(nextBrewery.getBreweryId());
 
-				if ((distanceBetween + distanceToHome) <= BeerUtils.MAX_DISTANCE && totalBeerCount <= beerCount) {
+				stack.push(nextBrewery);
+			} else {
 
-					totalBeerCount = beerCount;
-
-					// new travel history point
-					TravelHistory travel = new TravelHistory(nextBrewery.getLatitude(), nextBrewery.getLongitude(),
-						distanceBetween, totalBeerCount);
-					travel.setParents(new ArrayList<>(currentPoint.getParents()));
-					travel.getParents().add(nextBrewery.getBreweryId());
-
-					stack.push(travel);
-
-					result = new ArrayList<>(travel.getParents());
-				}
+				// if we don't find the biggest weight and have fuel left then try again
+				visited.add(nextBrewery.getBreweryId());
+				stack.push(current);
 			}
 		}
 
@@ -130,6 +122,7 @@ public class BeerController {
 
 	@RequestMapping("/goBack")
 	public String goBack() {
+		// go back to main form
 		return "redirect:form";
 	}
 }
