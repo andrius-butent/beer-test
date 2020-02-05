@@ -1,6 +1,10 @@
 package com.satalia.beer.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,9 +23,16 @@ public class BreweryCodes {
 	@Column(name="Brewery_Id")
 	private Long breweryId;
 
+	@Digits(integer = 10, fraction = 2, message = "hhhhh")
+	@Min(value = -90)
+	@Max(value = 90)
+	@NotNull(message = "is required")
 	@Column(name="Latitude")
 	private Double latitude;
 
+	@Min(value = -180)
+	@Max(value = 180)
+	@NotNull(message = "is required")
 	@Column(name="Longitude")
 	private Double longitude;
 

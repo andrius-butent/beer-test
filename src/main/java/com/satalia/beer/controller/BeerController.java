@@ -10,9 +10,11 @@ import com.satalia.beer.service.BreweryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.*;
 
 @Controller
@@ -36,8 +38,13 @@ public class BeerController {
   }
 
 	@RequestMapping("/startBeerTravel")
-	public String startBeerTravel(@ModelAttribute("myCoordinates") BreweryCodes myCoordinates, Model model) {
+	public String startBeerTravel(@Valid @ModelAttribute("myCoordinates") BreweryCodes myCoordinates,
+																BindingResult bindingResult,  Model model) {
 
+		if (bindingResult.hasErrors()) {
+			return "main-form";
+		}
+		// time when program started
 		long timeBefore = System.currentTimeMillis();
 
 		List<BreweryCodes> breweryList = new ArrayList<>();
