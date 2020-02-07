@@ -23,7 +23,6 @@ public class BreweryCodes {
 	@Column(name="Brewery_Id")
 	private Long breweryId;
 
-	@Digits(integer = 10, fraction = 2, message = "hhhhh")
 	@Min(value = -90)
 	@Max(value = 90)
 	@NotNull(message = "is required")
